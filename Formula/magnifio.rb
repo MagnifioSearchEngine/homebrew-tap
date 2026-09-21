@@ -3,12 +3,12 @@ class Magnifio < Formula
 
   desc "Terminal coding agent with coordinated sessions"
   homepage "https://github.com/MagnifioSearchEngine/homebrew-tap"
-  version "0.1.0a0"
+  version "0.1.0a2"
 
   bottle do
-    root_url "https://github.com/MagnifioSearchEngine/homebrew-tap/releases/download/v0.1.0a0"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "af07ecd445653481e003d0a0829002823a55759c197a281c771c418912a16e02"
-    sha256 cellar: :any_skip_relocation, sequoia:       "f9e94fa382f3fbf23bd230a1ae7e64f781297cdfb52958c0d4dfe1d1ebd203cd"
+    root_url "https://github.com/MagnifioSearchEngine/homebrew-tap/releases/download/v0.1.0a2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f78cd05c66dd5c5d28295866e3d37f8a4b9e821152ade91d441d99a8d5b0c862"
+    sha256 cellar: :any_skip_relocation, sequoia:       "42c9d8e6141e2b1700fda330ca80bae3a7bfc0bbf7a6640b6e69f5be17ef6e33"
   end
 
   depends_on "git"
@@ -17,12 +17,12 @@ class Magnifio < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/MagnifioSearchEngine/homebrew-tap/releases/download/v0.1.0a0/magnifio-0.1.0a0-macos-arm64.tar.gz"
-      sha256 "58745bcea4721c9cdabb3ad9096658baff44ff58b0ab8d124868379cf94a2f5b"
+      url "https://github.com/MagnifioSearchEngine/homebrew-tap/releases/download/v0.1.0a2/magnifio-0.1.0a2-macos-arm64.tar.gz"
+      sha256 "4578e7662830af37059817dc4b7705ee5b7646485cbb3c7e0f5f6f88e333fcd3"
     end
     on_intel do
-      url "https://github.com/MagnifioSearchEngine/homebrew-tap/releases/download/v0.1.0a0/magnifio-0.1.0a0-macos-x86_64.tar.gz"
-      sha256 "166012e58b6dd049e63e2051d6e49fe64f93bf0b9977771e56f499652b824d8f"
+      url "https://github.com/MagnifioSearchEngine/homebrew-tap/releases/download/v0.1.0a2/magnifio-0.1.0a2-macos-x86_64.tar.gz"
+      sha256 "725ac82938b623f48fd6793a13099748c72904a0224351f72a5f355b242a5d69"
     end
   end
 
