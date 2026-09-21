@@ -103,8 +103,27 @@ jobs:
           cd bottles
           brew bottle --json --no-rebuild \
             --root-url "https://github.com/$GITHUB_REPOSITORY/releases/download/$RELEASE_TAG" "$FORMULA"
+          # Install through the tap, just as users do. Homebrew 7 rejects
+          # arbitrary local bottle paths; a checksummed bottle URL is supported.
+          brew bottle --merge --write --no-commit ./*.json
+          python3 - <<'PY'
+          import json, os, pathlib, shutil, subprocess
+          from urllib.parse import unquote
+          root = pathlib.Path(os.environ["RUNNER_TEMP"]) / "bottle-install"
+          root.mkdir()
+          for path in pathlib.Path.cwd().glob("*.json"):
+              for item in json.loads(path.read_text()).values():
+                  for bottle in item["bottle"]["tags"].values():
+                      shutil.copyfile(bottle["local_filename"], root / unquote(bottle["filename"]))
+          tap = pathlib.Path(subprocess.check_output(["brew", "--repo", os.environ["TAP"]], text=True).strip())
+          formula = tap / "Formula/magnifio.rb"
+          original = f'root_url "https://github.com/{os.environ["GITHUB_REPOSITORY"]}/releases/download/{os.environ["RELEASE_TAG"]}"'
+          content = formula.read_text()
+          assert content.count(original) == 1
+          formula.write_text(content.replace(original, f'root_url "{root.as_uri()}"'))
+          PY
           brew uninstall "$FORMULA"
-          brew install --force-bottle ./*.bottle.tar.gz
+          brew install --force-bottle "$FORMULA"
           brew test "$FORMULA"
           "$(brew --prefix "$FORMULA")/libexec/bin/python" \
             "$(brew --prefix "$FORMULA")/share/magnifio/smoke_test.py" \
@@ -139,6 +158,11 @@ jobs:
         run: |
           brew tap "$TAP"
           cp candidate/Formula/magnifio.rb "$(brew --repo "$TAP")/Formula/magnifio.rb"
+          # Merging JSON does not implicitly trust a fully qualified formula,
+          # unlike `brew install`. Trust only this formula on Homebrew 7+.
+          if brew command trust >/dev/null 2>&1; then
+            brew trust --formula "$FORMULA"
+          fi
           brew bottle --merge --write --no-commit bottles/*.json
           mkdir -p tap-main/Formula
           cp "$(brew --repo "$TAP")/Formula/magnifio.rb" tap-main/Formula/magnifio.rb
