@@ -86,7 +86,9 @@ jobs:
           cp Formula/magnifio.rb "$(brew --repo "$TAP")/Formula/magnifio.rb"
           brew style "$FORMULA"
           if test -n "$previous" && test "$previous" != "${RELEASE_TAG#v}"; then
-            brew upgrade --build-bottle "$FORMULA"
+            # install upgrades an outdated formula and supports --build-bottle;
+            # upgrade itself does not accept that developer flag.
+            brew install --build-bottle "$FORMULA"
           else
             if test -n "$previous"; then brew uninstall "$FORMULA"; fi
             brew install --build-bottle "$FORMULA"
